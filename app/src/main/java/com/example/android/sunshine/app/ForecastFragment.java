@@ -65,10 +65,11 @@ public class ForecastFragment extends Fragment {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent launchDetail = new Intent(getActivity(),DetailActivity.class);
-                getActivity().startActivity(launchDetail);
-
+                String forecast = mForecastAdapter.getItem(position);
+                Intent launchDetail =
+                        new Intent(getActivity(),DetailActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(launchDetail);
             }
         });
 
@@ -90,6 +91,10 @@ public class ForecastFragment extends Fragment {
             FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
             fetchWeatherTask.execute(mPostalCode);
             return true;
+        }
+        if(id == R.id.action_settings){
+            Intent intent = new Intent(getActivity(),SettingsActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
