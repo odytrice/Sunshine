@@ -1,8 +1,10 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,7 +38,6 @@ public class ForecastFragment extends Fragment {
 
     private ArrayAdapter<String> mForecastAdapter;
     public final String LOG_TAG = ForecastFragment.class.getSimpleName();
-    private String mPostalCode = "94043";
 
     public ForecastFragment() {
     }
@@ -67,16 +68,21 @@ public class ForecastFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String forecast = mForecastAdapter.getItem(position);
                 Intent launchDetail =
-                        new Intent(getActivity(),DetailActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, forecast);
+                        new Intent(getActivity(), DetailActivity.class)
+                                .putExtra(Intent.EXTRA_TEXT, forecast);
                 startActivity(launchDetail);
             }
         });
 
-        FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-        fetchWeatherTask.execute(mPostalCode);
+        updateWeather();
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
     }
 
     @Override
@@ -87,16 +93,15 @@ public class ForecastFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_refresh) {
-            FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-            fetchWeatherTask.execute(mPostalCode);
-            return true;
-        }
-        if(id == R.id.action_settings){
-            Intent intent = new Intent(getActivity(),SettingsActivity.class);
-            startActivity(intent);
-        }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void updateWeather(){
+        FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String postalCode = prefs.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
+        String unit = prefs.getString(getString(R.string.pref_unit_key),getString(R.string.pref_unit_default));
+        fetchWeatherTask.execute(postalCode,unit);
     }
 
 
@@ -114,11 +119,11 @@ public class ForecastFragment extends Fragment {
             // Will contain the raw JSON response as a string.
             String[] forecasts = new String[]{};
 
-            if (params.length == 0) return null;
+            if (params.length < 2) return null;
 
             String postalCode = params[0];
+            String units = params[1];
             String format = "json";
-            String units = "metric";
             int days = 7;
 
 
@@ -131,7 +136,7 @@ public class ForecastFragment extends Fragment {
                         .parse("http://api.openweathermap.org/data/2.5/forecast/daily?").buildUpon()
                         .appendQueryParameter("q", postalCode)
                         .appendQueryParameter("mode", format)
-                        .appendQueryParameter("units", units)
+                        .appendQueryParameter("units", "metric")
                         .appendQueryParameter("cnt", Integer.toString(days));
 
                 URL url = new URL(uriBuilder.build().toString());
@@ -163,7 +168,7 @@ public class ForecastFragment extends Fragment {
                     // Stream was empty.  No point in parsing.
                     return null;
                 }
-                forecasts = new WeatherDataParser().getWeatherDataFromJson(builder.toString(), 7);
+                forecasts = new WeatherDataParser().getWeatherDataFromJson(builder.toString(), 7, units);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
