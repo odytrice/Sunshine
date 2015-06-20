@@ -1,10 +1,15 @@
 <resources>
     <string name="app_name">Sunshine</string>
     <string name="hello_world">Hello world!</string>
+
     <string name="action_refresh" translatable="false" >Refresh</string>
     <string name="action_settings">Settings</string>
+    <string name="action_map">Map Location</string>
+    <string name="action_share">Share</string>
+
     <string name="title_activity_detail">Forecast Detail</string>
-    <string name="pref_location_default" translatable="no">94043</string>
+
+    <string name="pref_location_default" translatable="no">Lagos</string>
     <string name="pref_location_label">Location</string>
     <string name="pref_location_key" translatable="no">location</string>
     <string name="pref_unit_key">unit</string>
