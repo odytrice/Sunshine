@@ -15,4 +15,6 @@
     <string name="pref_unit_key">unit</string>
     <string name="pref_unit_label">Units</string>
     <string name="pref_unit_default">Metric</string>
+    <string name="pref_unit_metric">Metric</string>
+    <string name="pref_unit_imperial">Imperial</string>
 </resources>
