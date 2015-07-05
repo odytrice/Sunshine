@@ -24,9 +24,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-import com.example.android.sunshine.app.data.WeatherContract;
-import com.example.android.sunshine.app.data.WeatherDbHelper;
-
 public class WeatherProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
@@ -122,6 +119,7 @@ public class WeatherProvider extends ContentProvider {
         // URI.  It's common to use NO_MATCH as the code for this case. Add the constructor below.
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = WeatherContract.CONTENT_AUTHORITY;
+
         // 2) Use the addURI function to match each of the types.  Use the constants from
         // WeatherContract to help define the types to the UriMatcher.
         matcher.addURI(authority, WeatherContract.PATH_WEATHER, WEATHER);

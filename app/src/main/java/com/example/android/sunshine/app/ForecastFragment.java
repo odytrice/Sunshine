@@ -1,15 +1,13 @@
 package com.example.android.sunshine.app;
 
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,12 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.android.sunshine.app.data.WeatherContract;
-
-import java.util.ArrayList;
 
 
 /**
@@ -86,6 +81,26 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         ListView list = (ListView) rootView.findViewById(R.id.listview_forecast);
         list.setAdapter(mForecastAdapter);
 
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // CursorAdapter returns a cursor at the correct position for getItem(), or null
+                // if it cannot seek to that position.
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                if(cursor != null){
+                    String locationSetting = Utility.getPreferredLocation(getActivity());
+
+                    Intent intent = new Intent(getActivity(),DetailActivity.class)
+                            .setData(WeatherContract
+                                        .WeatherEntry
+                                        .buildWeatherLocationWithDate(locationSetting,
+                                                cursor.getLong(COL_WEATHER_DATE)));
+
+                    startActivity(intent);
+                }
+            }
+        });
+
         return rootView;
     }
 
@@ -102,7 +117,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }
 
