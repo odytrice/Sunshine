@@ -12,7 +12,9 @@
 
         <provider
             android:authorities="@string/authority"
-            android:name=".data.WeatherProvider"/>
+            android:name=".data.WeatherProvider"
+            android:enabled="true"
+            android:exported="true"/>
 
         <activity
             android:name=".MainActivity"
