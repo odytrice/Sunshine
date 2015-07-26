@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.android.sunshine.app.data.WeatherContract;
 
@@ -70,7 +71,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     public void onLocationChanged(){
         updateWeather();
-        getLoaderManager().restartLoader(FORECAST_LOADER,null,ForecastFragment.this);
+        getLoaderManager().restartLoader(FORECAST_LOADER, null, ForecastFragment.this);
     }
 
     @Override
@@ -92,14 +93,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                if(cursor != null){
+                if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
 
-                    Intent intent = new Intent(getActivity(),DetailActivity.class)
+                    Intent intent = new Intent(getActivity(), DetailActivity.class)
                             .setData(WeatherContract
-                                        .WeatherEntry
-                                        .buildWeatherLocationWithDate(locationSetting,
-                                                cursor.getLong(COL_WEATHER_DATE)));
+                                    .WeatherEntry
+                                    .buildWeatherLocationWithDate(locationSetting,
+                                            cursor.getLong(COL_WEATHER_DATE)));
 
                     startActivity(intent);
                 }
@@ -123,6 +124,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         FetchWeatherTask fetchWeatherTask = new FetchWeatherTask(getActivity());
         String location = Utility.getPreferredLocation(getActivity());
         fetchWeatherTask.execute(location);
+        Toast.makeText(getActivity(),"Fetching Weather Data",Toast.LENGTH_SHORT).show();
     }
 
     @Override
