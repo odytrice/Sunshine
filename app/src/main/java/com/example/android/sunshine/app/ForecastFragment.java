@@ -1,6 +1,5 @@
 package com.example.android.sunshine.app;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -69,7 +68,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         super.onActivityCreated(savedInstanceState);
     }
 
-    public void onLocationChanged(){
+    public void onLocationChanged() {
         updateWeather();
         getLoaderManager().restartLoader(FORECAST_LOADER, null, ForecastFragment.this);
     }
@@ -96,13 +95,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
 
-                    Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .setData(WeatherContract
-                                    .WeatherEntry
-                                    .buildWeatherLocationWithDate(locationSetting,
-                                            cursor.getLong(COL_WEATHER_DATE)));
-
-                    startActivity(intent);
+                    ((CallBack) getActivity()).onItemSelected(WeatherContract
+                            .WeatherEntry
+                            .buildWeatherLocationWithDate(locationSetting,
+                                    cursor.getLong(COL_WEATHER_DATE)));
                 }
             }
         });
@@ -124,7 +120,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         FetchWeatherTask fetchWeatherTask = new FetchWeatherTask(getActivity());
         String location = Utility.getPreferredLocation(getActivity());
         fetchWeatherTask.execute(location);
-        Toast.makeText(getActivity(),"Fetching Weather Data",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Fetching Weather Data", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -147,5 +143,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mForecastAdapter.swapCursor(null);
+    }
+
+    public interface CallBack {
+        void onItemSelected(Uri dateUri);
     }
 }
