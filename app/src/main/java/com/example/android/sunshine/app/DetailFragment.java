@@ -147,7 +147,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
         if (mUri != null)
             return new CursorLoader(getActivity(), mUri, DETAIL_COLUMNS, null, null, null);
         return null;

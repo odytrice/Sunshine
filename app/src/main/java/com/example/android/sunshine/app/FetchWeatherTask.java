@@ -95,7 +95,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
     /**
      * Take the String representing the complete forecast in JSON Format and
      * pull out the data we need to construct the Strings needed for the wireframes.
-     * <p/>
      * Fortunately parsing is easy:  constructor takes the JSON string and converts it
      * into an Object hierarchy for us.
      */
@@ -137,8 +136,8 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
 
         try {
 
-            if(forecastJsonStr == null){
-                Log.d(LOG_TAG,"Forecast Json is null");
+            if (forecastJsonStr == null) {
+                Log.d(LOG_TAG, "Forecast Json is null");
                 return;
             }
 
@@ -274,12 +273,14 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
             final String FORMAT_PARAM = "mode";
             final String UNITS_PARAM = "units";
             final String DAYS_PARAM = "cnt";
+            final String API_KEY = "APPID";
 
             Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
                     .appendQueryParameter(QUERY_PARAM, params[0])
                     .appendQueryParameter(FORMAT_PARAM, format)
                     .appendQueryParameter(UNITS_PARAM, units)
                     .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
+                    .appendQueryParameter(API_KEY, "3928e769f97f8e38c808758ea4274b51")
                     .build();
 
             URL url = new URL(builtUri.toString());
@@ -311,7 +312,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
                 return null;
             }
             forecastJsonStr = buffer.toString();
-            getWeatherDataFromJson(forecastJsonStr,locationQuery);
+            getWeatherDataFromJson(forecastJsonStr, locationQuery);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
