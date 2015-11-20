@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -139,6 +140,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_main_map) {
+            openPrefLocation();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -147,6 +153,31 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         SunshineSyncAdapter.syncImmediately(getActivity());
 
         Toast.makeText(getActivity(), "Fetching Weather Data", Toast.LENGTH_SHORT).show();
+    }
+
+    private void openPrefLocation() {
+        // Using the URI scheme for showing a location found on a map.  This super-handy
+        // intent can is detailed in the "Common Intents" page of Android's developer site:
+        // http://developer.android.com/guide/components/intents-common.html#Maps
+        if ( null != mForecastAdapter ) {
+            Cursor c = mForecastAdapter.getCursor();
+            if ( null != c ) {
+                c.moveToPosition(0);
+                String posLat = c.getString(COL_COORD_LAT);
+                String posLong = c.getString(COL_COORD_LONG);
+                Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(geoLocation);
+
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Could not call " + geoLocation.toString() + ". No Application available ", Toast.LENGTH_SHORT);
+                }
+            }
+
+        }
     }
 
     @Override

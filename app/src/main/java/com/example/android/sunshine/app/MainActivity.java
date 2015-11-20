@@ -70,9 +70,6 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             startActivity(intent);
             return true;
         }
-        if (id == R.id.action_main_map) {
-            openPrefLocation();
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -93,22 +90,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         }
     }
 
-    private void openPrefLocation() {
-        String location = Utility.getPreferredLocation(this);
 
-        Uri geoLocation = Uri.parse("geo:0.0?").buildUpon()
-                .appendQueryParameter("q", location)
-                .build();
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(geoLocation);
-
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            Toast.makeText(MainActivity.this, "Could not call " + location + ". No Application available ", Toast.LENGTH_SHORT);
-        }
-    }
 
     @Override
     public void onItemSelected(Uri contentUri) {
